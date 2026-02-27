@@ -86,13 +86,21 @@ html, body {
   transition: 0.3s ease;
 }
 
-.title-gif { 
-  width: 180px; /* adjust size */ 
-  height: auto; 
-  margin-bottom: 12px; /* spacing above the title */ 
-  image-rendering: auto;
-  display: block; 
-  animation: fadeIn 1.2s ease; }
+.title-gif {
+  width: 180px;
+  height: auto;
+  margin-bottom: 12px;
+  display: block;
+
+  /* BORDER + GLOW */
+  border: 2px solid rgba(0, 255, 255, 0.8);
+  border-radius: 14px;          /* round edges */
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.6);
+
+
+}
+
+
 
 .nav-card img {
   width: 48px;
