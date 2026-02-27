@@ -15,17 +15,29 @@ html, body {
   position: relative;
 }
 
-/* ===== TRON GRID (moved to html so it shows) ===== */
-html::before {
+/* ===== TRON GRID INSIDE .home ===== */
+.home {
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative; /* required for ::before */
+}
+
+.home::before {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
   background:
     linear-gradient(#00ffff22 1px, transparent 1px),
     linear-gradient(90deg, #00ffff22 1px, transparent 1px);
   background-size: 80px 80px;
   animation: gridMove 12s linear infinite;
-  z-index: -1;
 }
 
 @keyframes gridMove {
@@ -75,16 +87,7 @@ html::before {
   transform: translateY(-1px);
 }
 
-/* ===== Home Layout ===== */
-.home {
-  height: calc(100vh - 60px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
+/* ===== Title ===== */
 .site-title {
   font-size: 64px;
   letter-spacing: 4px;
