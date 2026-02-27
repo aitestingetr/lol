@@ -14,6 +14,24 @@ html, body {
   color: #ffffff;
 }
 
+body {
+  background: radial-gradient(circle at top, #0a0a0a 0%, #000 70%);
+  animation: bgShift 12s ease-in-out infinite alternate;
+  background-size: 200% 200%;
+}
+
+@keyframes bgShift {
+  0% {
+    background-position: 0% 0%;
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    background-position: 100% 100%;
+    filter: hue-rotate(40deg);
+  }
+}
+
+
 /* ===== Top Bar ===== */
 .top-bar {
   height: 60px;
