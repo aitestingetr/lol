@@ -5,11 +5,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* Scanline texture effect over everything */
   cursor: crosshair;
 }
 
 body {
   position: relative;
+  /* Deep obsidian background with a subtle tech grid */
   background-color: #050505;
   background-image: 
     linear-gradient(0deg, transparent 24%, rgba(0, 212, 255, 0.05) 25%, rgba(0, 212, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 212, 255, 0.05) 75%, rgba(0, 212, 255, 0.05) 76%, transparent 77%, transparent),
@@ -25,6 +27,9 @@ body {
   overflow: hidden;
 }
 
+/* The Main Viewport */
+/* ... keep your @import and body styles ... */
+
 .canvas-area {
   border: 2px solid #00d4ff;
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
@@ -32,9 +37,11 @@ body {
   height: 85vh;
   position: relative;
   background: #000;
+  /* REMOVED clip-path from here because it can break coordinate math in some browsers */
   overflow: hidden; 
 }
 
+/* Add a pseudo-element for the "Cut Corner" look without clipping the actual canvas content */
 .canvas-area::after {
   content: "";
   position: absolute;
@@ -43,21 +50,23 @@ body {
   right: 0;
   bottom: 0;
   border: 2px solid #00d4ff;
-  pointer-events: none; 
+  pointer-events: none; /* Critical: allows clicks to pass through to the canvas */
   background: linear-gradient(45deg, transparent 98%, #00d4ff 98%);
   z-index: 10;
 }
 
 canvas {
   display: block;
+  /* Use absolute to ensure both canvases stack perfectly */
   position: absolute;
   top: 0;
   left: 0;
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain; 
+  object-fit: contain; /* Ensures the aspect ratio doesn't break the scan line */
 }
 
+/* Ensure the drawing canvas is always on top of the video feed */
 #imageCanvas {
   z-index: 5;
   background-color: transparent;
@@ -66,6 +75,8 @@ canvas {
 #canvas {
   z-index: 1;
 }
+
+/* ... keep your buttons and actions styles ... */
 
 .actions {
   display: flex;
@@ -95,12 +106,6 @@ button {
   clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 0 100%);
 }
 
-/* Specific Style for Direction Toggle to make it stand out */
-#direction-button {
-  border-left-width: 5px;
-  background: rgba(0, 212, 255, 0.05);
-}
-
 button:hover {
   background: #00d4ff;
   color: #000;
@@ -123,7 +128,6 @@ select {
   width: 250px;
   appearance: none;
   cursor: pointer;
-  margin-bottom: 10px;
 }
 
 select:focus {
