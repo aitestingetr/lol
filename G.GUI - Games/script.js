@@ -16,36 +16,75 @@ const htmlURL = "https://cdn.jsdelivr.net/gh/gn-math/html@main";
 let zones = [];
 let popularityData = {};
 const featuredContainer = document.getElementById('featuredZones');
+
+async function fetchZonesJson(url) {
+    const response = await fetch(url + "?t=" + Date.now());
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status} while loading zones`);
+    }
+
+    const text = await response.text();
+    let parsed;
+    try {
+        parsed = JSON.parse(text);
+    } catch (error) {
+        throw new Error(`Invalid zones JSON from ${url}: ${text.slice(0, 80)}`);
+    }
+
+    if (!Array.isArray(parsed)) {
+        throw new Error(`Zones payload from ${url} was not an array`);
+    }
+
+    return parsed;
+}
+
 async function listZones() {
     try {
       let sharesponse;
       let shajson;
       let sha;
+      try {
+        sharesponse = await fetch("https://api.github.com/repos/gn-math/assets/commits?t=" + Date.now());
+      } catch (error) {}
+      if (sharesponse && sharesponse.status === 200) {
         try {
-          sharesponse = await fetch("https://api.github.com/repos/gn-math/assets/commits?t="+Date.now());
-        } catch (error) {}
-        if (sharesponse && sharesponse.status === 200) {
-          try {
-            shajson = await sharesponse.json();
-            sha = shajson[0]['sha'];
-            if (sha) {
-                zonesURL = `https://cdn.jsdelivr.net/gh/gn-math/assets@${sha}/zones.json`;
-            }
-          } catch (error) {
-            try {
-                let secondarysharesponse = await fetch("https://raw.githubusercontent.com/gn-math/xml/refs/heads/main/sha.txt?t="+Date.now());
-                if (secondarysharesponse && secondarysharesponse.status === 200) {
-                    sha = (await secondarysharesponse.text()).trim();
-                    if (sha) {
-                        zonesURL = `https://cdn.jsdelivr.net/gh/gn-math/assets@${sha}/zones.json`;
-                    }
-                }
-            } catch(error) {}
+          shajson = await sharesponse.json();
+          sha = shajson[0]['sha'];
+          if (sha) {
+            zonesURL = `https://cdn.jsdelivr.net/gh/gn-math/assets@${sha}/zones.json`;
           }
+        } catch (error) {
+          try {
+            let secondarysharesponse = await fetch("https://raw.githubusercontent.com/gn-math/xml/refs/heads/main/sha.txt?t=" + Date.now());
+            if (secondarysharesponse && secondarysharesponse.status === 200) {
+              sha = (await secondarysharesponse.text()).trim();
+              if (sha) {
+                zonesURL = `https://cdn.jsdelivr.net/gh/gn-math/assets@${sha}/zones.json`;
+              }
+            }
+          } catch(error) {}
         }
-        const response = await fetch(zonesURL+"?t="+Date.now());
-        const json = await response.json();
-        zones = json;
+      }
+
+      const zoneSources = [zonesURL, ...zonesurls.filter(url => url !== zonesURL)];
+      let loadedZones = null;
+      let lastError = null;
+
+      for (const source of zoneSources) {
+        try {
+          loadedZones = await fetchZonesJson(source);
+          zonesURL = source;
+          break;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      if (!loadedZones) {
+        throw lastError || new Error('Unable to load zones');
+      }
+
+      zones = loadedZones;
         zones[0].featured = true; // always gonna be the discord
         await fetchPopularity();
         sortZones();
@@ -106,7 +145,7 @@ async function listZones() {
         }
     } catch (error) {
         console.error(error);
-        container.innerHTML = `Error loading zones: ${error}`;
+      container.innerHTML = `Error loading zones: ${error.message || error}`;
     }
 }
 async function fetchPopularity() {
