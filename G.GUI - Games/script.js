@@ -5,7 +5,9 @@ const searchBar = document.getElementById('searchBar');
 const sortOptions = document.getElementById('sortOptions');
 // https://www.jsdelivr.com/tools/purge
 const zonesurls = [
+  "https://raw.githubusercontent.com/gn-math/assets/main/zones.json",
     "https://cdn.jsdelivr.net/gh/gn-math/assets@main/zones.json",
+  "https://raw.githubusercontent.com/gn-math/assets/master/zones.json",
     "https://cdn.jsdelivr.net/gh/gn-math/assets@latest/zones.json",
     "https://cdn.jsdelivr.net/gh/gn-math/assets@master/zones.json",
     "https://cdn.jsdelivr.net/gh/gn-math/assets/zones.json"
@@ -85,7 +87,9 @@ async function listZones() {
       }
 
       zones = loadedZones;
+      if (zones.length > 0 && zones[0]) {
         zones[0].featured = true; // always gonna be the discord
+      }
         await fetchPopularity();
         sortZones();
         const search = new URLSearchParams(window.location.search);
